@@ -36,4 +36,4 @@ def generate_verification_code(length=8):
 
 #Create your Views here
 def home(request):
-    return render(request, 'store/index.html')
+    return render(request, 'store/shop.html')
