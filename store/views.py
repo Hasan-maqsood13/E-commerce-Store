@@ -21,6 +21,7 @@ from django.urls import reverse
 from datetime import timedelta
 from datetime import datetime
 from .models import *
+from accounts.models import User
 import random
 import stripe
 import json
@@ -36,4 +37,12 @@ def generate_verification_code(length=8):
 
 #Create your Views here
 def home(request):
-    return render(request, 'store/shop.html')
+    context = {}
+    if request.session.get('logged_in'):
+        try:
+            user_id = request.session.get('user_id')
+            user = User.objects.get(id=user_id)
+            context['user'] = user
+        except User.DoesNotExist:
+            pass
+    return render(request, 'store/shop.html', context)

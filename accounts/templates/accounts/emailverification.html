@@ -1,0 +1,203 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Verify Email{% endblock %}
+{% block content %}
+
+<div class="login_register_wrap section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-6 col-md-10">
+        <div class="login_wrap">
+          <div class="padding_eight_all bg-white">
+            <div class="heading_s1">
+              <h3>Email Verification</h3>
+              <p class="text-muted">We sent a code to your email. Please enter it below.</p>
+            </div>
+
+            <form method="POST" id="verify-form">
+              {% csrf_token %}
+              <div class="form-group mb-3">
+                <input type="email" readonly class="form-control" 
+                  name="email" id="email" value="{{ request.GET.email }}">
+              </div>
+
+              <div class="form-group mb-3">
+                <input type="text" required class="form-control" 
+                  name="code" id="code" placeholder="Enter Verification Code">
+              </div>
+
+              <div class="form-group mb-3">
+                <button type="submit" id="verify-btn" 
+                  class="btn btn-fill-out btn-block">
+                  <span id="verify-spinner" 
+                    class="spinner-border spinner-border-sm text-white d-none"
+                    role="status" aria-hidden="true"></span>
+                  <span id="verify-text">Verify</span>
+                </button>
+              </div>
+            </form>
+
+            <!-- Resend code section -->
+            <div class="text-center mt-3">
+              <p id="resend-timer">You can resend code in <b>10</b> seconds...</p>
+              <button id="resend-btn" class="btn btn-sm btn-outline-primary d-none">
+                Resend Code
+              </button>
+            </div>
+
+            <div class="form-note text-center mt-3">
+              Already verified? <a href="{% url 'login' %}">Login</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function () {
+    // CSRF token setup for AJAX
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    $.ajaxSetup({
+      headers: { 'X-CSRFToken': csrftoken }
+    });
+
+    // ✅ Verification form submit
+    $('#verify-form').on('submit', function (e) {
+      e.preventDefault();
+
+      $('#verify-spinner').removeClass('d-none');
+      $('#verify-text').addClass('invisible');
+      $('#verify-btn').prop('disabled', true); // Button ko disable karein
+
+      $.ajax({
+        type: 'POST',
+        url: '{% url "verify_email" %}',
+        data: $(this).serialize(),
+        success: function (response) {
+          if (response.success) {
+            Swal.fire({
+              title: 'Verified!',
+              text: 'Your account has been verified successfully.',
+              icon: 'success',
+              showConfirmButton: false, 
+              timer: 3000,
+              willClose: () => {
+                window.location.href = "{% url 'login' %}";
+              }
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Invalid Code",
+              text: response.message || "Please try again.",
+            });
+          }
+          $('#verify-spinner').addClass('d-none');
+          $('#verify-text').removeClass('invisible');
+          $('#verify-btn').prop('disabled', false); // Button ko wapas enable karein
+        },
+        error: function () {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Something went wrong!",
+          });
+          $('#verify-spinner').addClass('d-none');
+          $('#verify-text').removeClass('invisible');
+          $('#verify-btn').prop('disabled', false); // Button ko wapas enable karein
+        }
+      });
+    });
+
+    // ✅ Timer for resend button
+    let counter = 10;
+    let interval = setInterval(function () {
+      counter--;
+      $("#resend-timer b").text(counter);
+      if (counter <= 0) {
+        clearInterval(interval);
+        $("#resend-timer").hide();
+        $("#resend-btn").removeClass("d-none");
+      }
+    }, 1000);
+
+    // ✅ Resend button click
+    $("#resend-btn").on("click", function () {
+      $(this).prop('disabled', true);
+      $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...');
+
+      let email = $("#email").val();
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'resend_code' %}",
+        data: {
+          email: email,
+          csrfmiddlewaretoken: csrftoken
+        },
+        success: function (response) {
+          $("#resend-btn").prop('disabled', false);
+          $("#resend-btn").html('Resend Code');
+
+          if (response.success) {
+            Swal.fire({
+              icon: "success",
+              title: "Code Sent",
+              text: "A new verification code has been sent to your email.",
+            });
+            // Naya timer shuru karein
+            counter = 10;
+            $("#resend-timer").show();
+            $("#resend-btn").addClass("d-none");
+            interval = setInterval(function () {
+              counter--;
+              $("#resend-timer b").text(counter);
+              if (counter <= 0) {
+                clearInterval(interval);
+                $("#resend-timer").hide();
+                $("#resend-btn").removeClass("d-none");
+              }
+            }, 1000);
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: response.message || "Could not resend code.",
+            });
+          }
+        },
+        error: function () {
+          $("#resend-btn").prop('disabled', false);
+          $("#resend-btn").html('Resend Code');
+          
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Something went wrong!",
+          });
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

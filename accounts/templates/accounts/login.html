@@ -1,0 +1,169 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Eshop | Login{% endblock %}
+
+{% block content %}
+<style>
+    .btn-custom {
+        background-color: #5cbfd1;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #48aabf;
+    }
+
+    .spinner-border {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        vertical-align: text-bottom;
+        border: 0.15em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-border 0.75s linear infinite;
+    }
+
+    #login-btn {
+        position: relative;
+    }
+
+    #login-spinner {
+        position: absolute;
+        top: 10px;
+        left: 120px;
+    }
+
+    .invalid-feedback {
+        display: block;
+        font-size: 0.875em;
+    }
+</style>
+
+<div class="login_register_wrap section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-6 col-md-10">
+                <div class="login_wrap">
+                    <div class="padding_eight_all bg-white">
+                        <div class="heading_s1">
+                            <h3>Login</h3>
+                        </div>
+
+                        <!-- ✅ Only one form -->
+                        <form method="post" id="login-form">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                                <div class="invalid-feedback" id="email-error"></div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Password">
+                                <div class="invalid-feedback" id="password-error"></div>
+                            </div>
+
+                            <div class="form-group mb-3 text-right">
+                                <a href="#" id="forgot-password-link">Forgot your password?</a>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <button type="submit" id="login-btn" class="btn btn-fill-out btn-block">
+                                    <span id="login-spinner" class="spinner-border spinner-border-sm text-white d-none"
+                                        role="status" aria-hidden="true"></span>
+                                    <span id="login-text">Log in</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="form-note text-center">
+                            Don't have an account? <a href="{% url 'register' %}">Register here</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // ✅ Handle login AJAX
+        $('#login-form').on('submit', function (e) {
+            e.preventDefault();
+
+            $('#login-spinner').removeClass('d-none');
+            $('#login-text').text('Logging in...');
+            $('#login-btn').prop('disabled', true);
+
+            // Reset error messages
+            $('.invalid-feedback').text('');
+            $('.form-control').removeClass('is-invalid');
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "login" %}',  // 👈 make sure 'login' exists in urls.py
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Login Successful!',
+                            text: 'Redirecting...',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            willClose: () => {
+                                window.location.href = response.redirect_url || "{% url 'home' %}";
+                            }
+                        });
+                    } else {
+                        if (response.errors) {
+                            for (const field in response.errors) {
+                                $(`#${field}`).addClass('is-invalid');
+                                $(`#${field}-error`).text(response.errors[field]);
+                            }
+                        }
+                        Swal.fire({
+                            icon: "error",
+                            title: "Login Failed",
+                            text: response.message || "Please check your credentials and try again.",
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "An Error Occurred",
+                        text: "Something went wrong! Please try again later.",
+                    });
+                },
+                complete: function () {
+                    $('#login-spinner').addClass('d-none');
+                    $('#login-text').text('Log in');
+                    $('#login-btn').prop('disabled', false);
+                }
+            });
+        });
+
+        // ✅ Forgot password link
+        const loginEmailInput = document.getElementById('email');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                const email = loginEmailInput ? loginEmailInput.value.trim() : "";
+                let url = "{% url 'forgotpassword' %}";
+                if (email) {
+                    url += "?email=" + encodeURIComponent(email);
+                }
+                window.location.href = url;
+            });
+        }
+    });
+</script>
+{% endblock %}

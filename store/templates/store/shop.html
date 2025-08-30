@@ -2,6 +2,139 @@
 {% load static %}
 {% block title %}Eshop | Home{% endblock %}
 {% block content %}
+<div class="modal fade subscribe_popup" id="onload-popup" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="ion-ios-close-empty"></i></span>
+                </button>
+                <div class="row g-0">
+                    <div class="col-sm-7">
+                        <div class="popup_content text-start">
+                            <div class="popup-text">
+                                <div class="heading_s1">
+                                    <h3>Subscribe Newsletter and Get 25% Discount!</h3>
+                                </div>
+                                <p>
+                                    Subscribe to the newsletter to receive updates about new
+                                    products.
+                                </p>
+                            </div>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
+                                    <input name="email" required="" type="email" class="form-control"
+                                        placeholder="Enter Your Email" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <button class="btn btn-fill-out btn-block text-uppercase" title="Subscribe"
+                                        type="submit">
+                                        Subscribe
+                                    </button>
+                                </div>
+                            </form>
+                            <div class="chek-form">
+                                <div class="custome-checkbox">
+                                    <input class="form-check-input" type="checkbox" name="checkbox"
+                                        id="exampleCheckbox3" value="" />
+                                    <label class="form-check-label" for="exampleCheckbox3"><span>Don't show this
+                                            popup again!</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="background_bg h-100" data-img-src="{% static 'store/assets/images/el_img1.jpg' %}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="banner_section slide_medium shop_banner_slider staggered-animation-wrap">
+    <div id="carouselExampleControls" class="carousel slide carousel-fade light_arrow" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item background_bg active"
+                data-img-src="{% static 'store/assets/images/banner16.jpg' %}">
+                <div class="banner_slide_content banner_content_inner">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-7 col-10">
+                                <div class="banner_content overflow-hidden">
+                                    <h2 class="staggered-animation" data-animation="slideInLeft"
+                                        data-animation-delay="0.5s">
+                                        LED 75 INCH F58
+                                    </h2>
+                                    <h5 class="mb-3 mb-sm-4 staggered-animation font-weight-light"
+                                        data-animation="slideInLeft" data-animation-delay="1s">
+                                        Get up to <span class="text_default">50%</span> off
+                                        Today Only!
+                                    </h5>
+                                    <a class="btn btn-fill-out staggered-animation text-uppercase"
+                                        href="shop-left-sidebar.html" data-animation="slideInLeft"
+                                        data-animation-delay="1.5s">Shop Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item background_bg" data-img-src="{% static 'store/assets/images/banner17.jpg' %}">
+                <div class="banner_slide_content banner_content_inner">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 col-10">
+                                <div class="banner_content overflow-hidden">
+                                    <h2 class="staggered-animation" data-animation="slideInLeft"
+                                        data-animation-delay="0.5s">
+                                        Smart Phones
+                                    </h2>
+                                    <h5 class="mb-3 mb-sm-4 staggered-animation font-weight-light"
+                                        data-animation="slideInLeft" data-animation-delay="1s">
+                                        <span class="text_default">50%</span> off in all
+                                        products
+                                    </h5>
+                                    <a class="btn btn-fill-out staggered-animation text-uppercase"
+                                        href="shop-left-sidebar.html" data-animation="slideInLeft"
+                                        data-animation-delay="1.5s">Shop Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item background_bg" data-img-src="{% static 'store/assets/images/banner18.jpg' %}">
+                <div class="banner_slide_content banner_content_inner">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 col-10">
+                                <div class="banner_content overflow-hidden">
+                                    <h2 class="staggered-animation" data-animation="slideInLeft"
+                                        data-animation-delay="0.5s">
+                                        Beat Headphone
+                                    </h2>
+                                    <h5 class="mb-3 mb-sm-4 staggered-animation font-weight-light"
+                                        data-animation="slideInLeft" data-animation-delay="1s">
+                                        Taking your Viewing Experience to Next Level
+                                    </h5>
+                                    <a class="btn btn-fill-out staggered-animation text-uppercase"
+                                        href="shop-left-sidebar.html" data-animation="slideInLeft"
+                                        data-animation-delay="1.5s">Shop Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev"><i
+                class="ion-chevron-left"></i></a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next"><i
+                class="ion-chevron-right"></i></a>
+    </div>
+</div>
 <div class="main_content">
     <!-- START SECTION BANNER -->
     <div class="section pb_20 small_pt">

@@ -34,17 +34,34 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-4">
-                    <div class="header_topbar_info" style="padding-left: 414px;">
-                        Signup / Signin
+                    <div class="header_topbar_info" style="padding-left: 425px;">
+                        {% if request.session.logged_in %}
+                        {% if request.session.user_role == "admin" %}
+                        <a href="{% url 'dashboard' %}" style="text-decoration: none; color: white;">
+                            <i class="fa fa-user" style="margin-right: 10px;"></i> Admin Dashboard
+                        </a>
+                        {% else %}
+                        <a href="{% url 'accountshome' %}"
+                            style="text-decoration: none; color: yellow; font-weight: bold;">
+                            <i class="fa fa-user" style="margin-right: 10px;"></i> {{ request.session.username }}
+                        </a>
+                        {% endif %}
+                        {% else %}
+                        <a href="{% url 'login' %}" style="text-decoration: none; color: white;">
+                            <i class="fa fa-user" style="margin-right: 10px;"></i> Login
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
+
+
             </div>
         </div>
     </div>
     <div class="middle-header dark_skin">
         <div class="container">
             <div class="nav_block">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{% url 'home' %}">
                     <img class="logo_light" src="{% static 'store/assets/images/logo_light.png' %}" alt="logo" />
                     <img class="logo_dark" src="{% static 'store/assets/images/logo_dark.png' %}" alt="logo" />
                 </a>

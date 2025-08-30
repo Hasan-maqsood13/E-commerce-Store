@@ -20,9 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('proadmin/', admin.site.urls),
+    path('django-admin/', admin.site.urls),
     path('store/', include('store.urls')),
     path('admin/', include('proadmin.urls')),
+    path('accounts/', include('accounts.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

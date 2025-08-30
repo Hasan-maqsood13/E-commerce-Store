@@ -39,4 +39,4 @@ def adminhome(request):
     return HttpResponse("Hemlooo Geeee")
 
 def dashboard(request):
-    return render(request, 'admin/dashboard.html')
+    return render(request, 'proadmin/dashboard.html')

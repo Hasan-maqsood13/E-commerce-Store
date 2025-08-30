@@ -1,0 +1,273 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Eshop | Register{% endblock %}
+{% block content %}
+{% load static %}
+<style>
+    .btn-custom {
+        background-color: #5cbfd1;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #48aabf;
+    }
+
+    .invalid {
+        color: red;
+    }
+
+    .spinner-border {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        vertical-align: text-bottom;
+        border: 0.15em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-border 0.75s linear infinite;
+    }
+
+    #signup-btn {
+        position: relative;
+    }
+
+    #signup-spinner {
+        position: absolute;
+        top: 10px;
+        left: 163px;
+    }
+</style>
+<div class="login_register_wrap section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-6 col-md-10">
+                <div class="login_wrap">
+                    <div class="padding_eight_all bg-white">
+                        <div class="heading_s1">
+                            <h3>Create an Account</h3>
+                        </div>
+                        <form method="POST" id="signup-form">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <input type="text" required=""
+                                    class="form-control {% if errors.name %}is-invalid{% endif %}" name="name" id="name"
+                                    placeholder="Enter Your Name" value="{{ values.name|default:'' }}">
+                                {% if errors.name %}
+                                <div class="text-danger mt-1">{{ errors.name }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="text" required=""
+                                    class="form-control {% if errors.email %}is-invalid{% endif %}" name="email"
+                                    id="email" placeholder="Enter Your Email" value="{{ values.email|default:'' }}">
+                                {% if errors.email %}
+                                <div class="text-danger mt-1">{{ errors.email }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group mb-3">
+                                <input class="form-control {% if errors.password %}is-invalid{% endif %}" required=""
+                                    type="password" name="password" id="password" placeholder="Password">
+                                {% if errors.password %}
+                                <div class="text-danger mt-1">{{ errors.password }}</div>
+                                {% endif %}
+                            </div>
+                            <div id="password-contain" class="p-3 bg-light mb-2 rounded">
+                                <h5 class="fs-13">Password must contain:</h5>
+                                <p id="pass-length" class="invalid fs-12 mb-2">Minimum <b>8 characters</b></p>
+                                <p id="pass-lower" class="invalid fs-12 mb-2">At <b>lowercase</b> letter (a-z)</p>
+                                <p id="pass-upper" class="invalid fs-12 mb-2">At least <b>uppercase</b> letter (A-Z)</p>
+                                <p id="pass-number" class="invalid fs-12 mb-0">A least <b>number</b> (0-9)</p>
+                                <p id="pass-special" class="invalid fs-12 mb-0">At least one <b>special
+                                        character</b>(!@#$...)</p>
+                            </div>
+                            <div class="login_footer form-group mb-3">
+                                <div class="chek-form">
+                                    <div class="custome-checkbox">
+                                        <input class="form-check-input" type="checkbox" name="checkbox"
+                                            id="exampleCheckbox2" value="">
+                                        <label class="form-check-label" for="exampleCheckbox2"><span>I agree to terms
+                                                &amp; Policy.</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <button type="submit" id="signup-btn" class="btn btn-fill-out btn-block"
+                                    name="register">
+                                    <span id="signup-spinner" class="spinner-border spinner-border-sm text-white d-none"
+                                        role="status" aria-hidden="true"></span>
+                                    <span id="signup-text">Sign Up</span>
+                                </button>
+                            </div>
+                        </form>
+                        <div class="different_login">
+                            <span> or</span>
+                        </div>
+                        <ul class="btn-login list_none text-center">
+                            <li><a href="#" class="btn btn-facebook"><i class="ion-social-facebook"></i>Facebook</a>
+                            </li>
+                            <li><a href="#" class="btn btn-google"><i class="ion-social-googleplus"></i>Google</a></li>
+                        </ul>
+                        <div class="form-note text-center">Already have an account? <a href="{% url 'login' %}">Log
+                                in</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Your existing password validation script here...
+    document.addEventListener("DOMContentLoaded", function () {
+        const passwordInput = document.getElementById("password");
+        const container = document.getElementById("password-contain");
+        const passLength = document.getElementById("pass-length");
+        const passLower = document.getElementById("pass-lower");
+        const passUpper = document.getElementById("pass-upper");
+        const passNumber = document.getElementById("pass-number");
+        const passSpecial = document.getElementById("pass-special");
+    
+        container.style.display = "none";
+    
+        passwordInput.addEventListener("focus", function () {
+            container.style.display = "block";
+        });
+    
+        passwordInput.addEventListener("input", function () {
+            const val = passwordInput.value;
+    
+            // Regex for validation
+            const hasLength = val.length >= 8;
+            const hasLowercase = /[a-z]/.test(val);
+            const hasUppercase = /[A-Z]/.test(val);
+            const hasNumber = /\d/.test(val);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(val);
+    
+            // Update classes based on validation
+            function updateClass(element, isValid) {
+                if (isValid) {
+                    element.classList.remove("invalid");
+                    element.classList.add("text-success");
+                } else {
+                    element.classList.add("invalid");
+                    element.classList.remove("text-success");
+                }
+            }
+    
+            updateClass(passLength, hasLength);
+            updateClass(passLower, hasLowercase);
+            updateClass(passUpper, hasUppercase);
+            updateClass(passNumber, hasNumber);
+            updateClass(passSpecial, hasSpecial);
+        });
+    
+        passwordInput.addEventListener("blur", function () {
+            // Keep the container visible if any validation rule is not met
+            const val = passwordInput.value;
+            if (val.length < 8 || !/[a-z]/.test(val) || !/[A-Z]/.test(val) || !/\d/.test(val) || !/[!@#$%^&*(),.?":{}|<>]/.test(val)) {
+                // Do nothing, let it remain visible
+            } else {
+                container.style.display = "none";
+            }
+        });
+    });
+</script>
+
+<script>
+    // CSRF token setup for AJAX
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    $.ajaxSetup({
+        headers: { 'X-CSRFToken': csrftoken }
+    });
+    
+    $(document).ready(function () {
+        $('#signup-form').on('submit', function (e) {
+            e.preventDefault();
+
+            // Show spinner and hide text
+            $('#signup-spinner').removeClass('d-none');
+            $('#signup-text').addClass('invisible');
+            $('#signup-btn').prop('disabled', true); // Disable button to prevent multiple submissions
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "register" %}',
+                data: $(this).serialize(),
+                success: function (response) {
+                    // Hide spinner and show text regardless of success or failure
+                    $('#signup-spinner').addClass('d-none');
+                    $('#signup-text').removeClass('invisible');
+                    $('#signup-btn').prop('disabled', false);
+
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Account Created.',
+                            text: 'Please check your email to verify your account.',
+                            icon: 'success',
+                            showConfirmButton: true, // Show a button for user to click
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirect to the next URL provided by the server
+                                window.location.href = response.next_url;
+                            }
+                        });
+                    } else {
+                        // Clear previous errors
+                        $('.text-danger').remove();
+                        $('.is-invalid').removeClass('is-invalid');
+
+                        // Display new errors
+                        for (let field in response.errors) {
+                            let input = $(`[name="${field}"]`);
+                            input.addClass('is-invalid');
+                            input.after(`<div class="text-danger mt-1">${response.errors[field]}</div>`);
+                        }
+                        
+                        Swal.fire({
+                            icon: "error",
+                            title: "An Error Occured",
+                            text: "Please correct the form errors.",
+                        });
+                    }
+                },
+                error: function () {
+                    // Hide spinner and show text on error
+                    $('#signup-spinner').addClass('d-none');
+                    $('#signup-text').removeClass('invisible');
+                    $('#signup-btn').prop('disabled', false);
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "An Error Occured",
+                        text: "Something went wrong! Please try again later.",
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

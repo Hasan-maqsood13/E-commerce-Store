@@ -32,7 +32,7 @@
 <body>
     <!-- Begin page -->
     <div id="layout-wrapper">
-        {% include 'admin/header.html' %}
+        {% include 'proadmin/header.html' %}
         <!-- removeNotificationModal -->
         <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -68,7 +68,7 @@
         </div>
         <!-- /.modal -->
         <!-- ========== App Menu ========== -->
-        {% include 'admin/sidebar.html' %}
+        {% include 'proadmin/sidebar.html' %}
         <!-- Left Sidebar End -->
         <!-- Vertical Overlay-->
         <div class="vertical-overlay"></div>
@@ -78,7 +78,7 @@
         <!-- ============================================================== -->
         <div class="main-content">
             {% block content %} {% endblock %}
-            {% include 'admin/footer.html' %}
+            {% include 'proadmin/footer.html' %}
         </div>
         <!-- end main content-->
     </div>

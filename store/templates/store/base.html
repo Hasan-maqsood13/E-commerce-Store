@@ -1,0 +1,159 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="Anil z" name="author" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description"
+        content="Shopwise is Powerful features and You Can Use The Perfect Build this Template For Any eCommerce Website. The template is built for sell Fashion Products, Shoes, Bags, Cosmetics, Clothes, Sunglasses, Furniture, Kids Products, Electronics, Stationery Products and Sporting Goods." />
+    <meta name="keywords"
+        content="ecommerce, electronics store, Fashion store, furniture store,  bootstrap 4, clean, minimal, modern, online store, responsive, retail, shopping, ecommerce store" />
+
+    <!-- SITE TITLE -->
+    <title>{% block title %}Hemloo Gee{% endblock %}</title>
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'store/assets/images/favicon.png' %}" />
+    <!-- Animation CSS -->
+    <link rel="stylesheet" href="{% static 'store/assets/css/animate.css' %}" />
+    <!-- Latest Bootstrap min CSS -->
+    <link rel="stylesheet" href="{% static 'store/assets/bootstrap/css/bootstrap.min.css' %}" />
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="{% static 'store/assets/css/all.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/css/themify-icons.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/css/linearicons.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/css/flaticon.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/css/simple-line-icons.css' %}" />
+    <!--- owl carousel CSS-->
+    <link rel="stylesheet" href="{% static 'store/assets/owlcarousel/css/owl.carousel.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/owlcarousel/css/owl.theme.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/owlcarousel/css/owl.theme.default.min.css' %}" />
+    <!-- Magnific Popup CSS -->
+    <link rel="stylesheet" href="{% static 'store/assets/css/magnific-popup.css' %}" />
+    <!-- Slick CSS -->
+    <link rel="stylesheet" href="{% static 'store/assets/css/slick.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/css/slick-theme.css' %}" />
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="{% static 'store/assets/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'store/assets/css/responsive.css' %}" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-106310707-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-106310707-1', { 'anonymize_ip': true });
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-G6MPNF0KNC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-G6MPNF0KNC');
+    </script>
+
+    <!-- Hotjar Tracking Code for bestwebcreator.com -->
+    <script>
+        (function (h, o, t, j, a, r) {
+            h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+            h._hjSettings = { hjid: 2073024, hjsv: 6 };
+            a = o.getElementsByTagName('head')[0];
+            r = o.createElement('script'); r.async = 1;
+            r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    </script>
+
+    <!-- Start of StatCounter Code -->
+    <script>
+        <!--
+        var sc_project=11921154;
+        var sc_security="6c07f98b";
+            var scJsHost = (("https:" == document.location.protocol) ?
+            "https://secure." : "http://www.");
+                //-->
+
+        document.write("<sc" + "ript src='" + scJsHost + "statcounter.com/counter/counter.js'>
+        </" +"script > ");
+    </script>
+    <!-- End of StatCounter Code -->
+</head>
+
+<body>
+    <!-- LOADER -->
+    <div class="preloader">
+        <div class="lds-ellipsis">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <!-- END LOADER -->
+
+    <!-- Home Popup Section -->
+    
+    <!-- End Screen Load Popup Section -->
+
+    <!-- START HEADER -->
+    {% include 'store/header.html' %}
+    <!-- END HEADER -->
+
+    <!-- START SECTION BANNER -->
+    
+    <!-- END SECTION BANNER -->
+    <!-- END MAIN CONTENT -->
+    {% block content %} {% endblock %}
+    <!-- END MAIN CONTENT -->
+    <!-- START FOOTER -->
+    {% include 'store/footer.html' %}
+    <!-- END FOOTER -->
+
+    <a href="#" class="scrollup" style="display: none;"><i class="ion-ios-arrow-up"></i></a>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Latest jQuery -->
+    <script src="{% static 'store/assets/js/jquery-3.7.0.min.js' %}"></script>
+    <!-- popper min js -->
+    <script src="{% static 'store/assets/js/popper.min.js' %}"></script>
+    <!-- Latest compiled and minified Bootstrap -->
+    <script src="{% static 'store/assets/bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- owl-carousel min js  -->
+    <script src="{% static 'store/assets/owlcarousel/js/owl.carousel.min.js' %}"></script>
+    <!-- magnific-popup min js  -->
+    <script src="{% static 'store/assets/js/magnific-popup.min.js' %}"></script>
+    <!-- waypoints min js  -->
+    <script src="{% static 'store/assets/js/waypoints.min.js' %}"></script>
+    <!-- parallax js  -->
+    <script src="{% static 'store/assets/js/parallax.js' %}"></script>
+    <!-- countdown js  -->
+    <script src="{% static 'store/assets/js/jquery.countdown.min.js' %}"></script>
+    <!-- imagesloaded js -->
+    <script src="{% static 'store/assets/js/imagesloaded.pkgd.min.js' %}"></script>
+    <!-- isotope min js -->
+    <script src="{% static 'store/assets/js/isotope.min.js' %}"></script>
+    <!-- jquery.dd.min js -->
+    <script src="{% static 'store/assets/js/jquery.dd.min.js' %}"></script>
+    <!-- slick js -->
+    <script src="{% static 'store/assets/js/slick.min.js' %}"></script>
+    <!-- elevatezoom js -->
+    <script src="{% static 'store/assets/js/jquery.elevatezoom.js' %}"></script>
+    <!-- scripts js -->
+    <script src="{% static 'store/assets/js/scripts.js' %}"></script>
+</body>
+
+</html>
