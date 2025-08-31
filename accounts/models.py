@@ -39,3 +39,28 @@ class User(models.Model):
 
     def __str__(self):
         return f"{self.username} - {self.email} - {self.role}"
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    date_time = models.DateTimeField(default=timezone.now)
+
+    STATUS_CHOICES = (
+        ("Unread", "Unread"),
+        ("Read", "Read"),
+        ("Pending", "Pending"),
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Unread")
+
+    TYPE_CHOICES = (
+        ("Order Update", "Order Update"),
+        ("Promotional", "Promotional"),
+        ("Alert", "Alert"),
+        ("System", "System"),
+        ("New Customer", "New Customer"),  # Add this line
+    )
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES, default="System")
+
+    def __str__(self):
+        return f"{self.title} ({self.status})"

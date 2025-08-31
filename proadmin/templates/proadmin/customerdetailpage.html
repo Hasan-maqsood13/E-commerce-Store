@@ -1,0 +1,104 @@
+{% extends 'proadmin/base.html' %}
+{% load static %}
+{% block title %} Eshop-Admin | Customer's {% endblock %}
+
+{% block content %}
+<div class="page-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
+          <h4 class="mb-sm-0">Customer Details</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Customers</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(1);">All Customers</a></li>
+              <li class="breadcrumb-item active">Customer Details</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title mb-0">Customer Information for **{{ customer.username }}**</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped">
+                <tbody>
+                  <tr>
+                    <th>Username</th>
+                    <td>{{ customer.username }}</td>
+                  </tr>
+                  <tr>
+                    <th>First Name</th>
+                    <td>{{ customer.firstname|default:"N/A" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Last Name</th>
+                    <td>{{ customer.lastname|default:"N/A" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Email</th>
+                    <td>{{ customer.email }}</td>
+                  </tr>
+                  <tr>
+                    <th>Phone Number</th>
+                    <td>{{ customer.phone_number|default:"N/A" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Address</th>
+                    <td>{{ customer.address|default:"N/A" }}</td>
+                  </tr>
+                  <tr>
+                    <th>City</th>
+                    <td>{{ customer.city|default:"N/A" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Country</th>
+                    <td>{{ customer.country|default:"N/A" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Postal Code</th>
+                    <td>{{ customer.postal_code|default:"N/A" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Role</th>
+                    <td>{{ customer.get_role_display }}</td>
+                  </tr>
+                  <tr>
+                    <th>Account Status</th>
+                    <td>
+                      {% if customer.is_active %}
+                        <span class="badge bg-success">Active</span>
+                      {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Date Joined</th>
+                    <td>{{ customer.date_joined|date:"F j, Y, P" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Last Updated</th>
+                    <td>{{ customer.last_updated|date:"F j, Y, P" }}</td>
+                  </tr>
+                  <tr>
+                    <th>Last Login</th>
+                    <td>{{ customer.last_login|default:"N/A" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -8,8 +8,7 @@
                 <img src="{% static 'admin/assets/images/logo-sm.png' %}" alt="" height="22" />
             </span>
             <span class="logo-lg">
-                <img src="{% static 'admin/assets/images/logo-light.png' %}" alt="" height="17" />
-            </span>
+                <img class="logo_light" src="{% static 'store/assets/images/logo_light.png' %}" alt="logo" />
         </a>
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
             id="vertical-hover">
@@ -67,9 +66,9 @@
             <div id="two-column-menu"></div>
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                
+
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="widgets.html">
+                    <a class="nav-link menu-link" href="{% url 'dashboard' %}">
                         <i class="ri-dashboard-2-line"></i>
                         <span data-key="t-widgets">Dashboard</span>
                     </a>
@@ -85,7 +84,8 @@
                             <div class="col-lg-4">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="ui-alerts.html" class="nav-link" data-key="t-alerts">All Notifications</a>
+                                        <a href="{% url 'notifications' %}" class="nav-link" data-key="t-alerts">All
+                                            Notifications</a>
                                     </li>
                                 </ul>
                             </div>
@@ -101,7 +101,7 @@
                     <div class="collapse menu-dropdown" id="sidebarApps">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                                <a href="{% url 'customerslist' %}" class="nav-link" data-key="t-chat">
                                     All Customers
                                 </a>
                             </li>
@@ -141,7 +141,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="apps-chat.html" class="nav-link" data-key="t-chat">
-                                    All Products    
+                                    All Products
                                 </a>
                             </li>
                         </ul>
@@ -170,7 +170,7 @@
                     </div>
                 </li>
 
-                
+
 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAdvanceUI" data-bs-toggle="collapse" role="button"
@@ -181,11 +181,13 @@
                     <div class="collapse menu-dropdown" id="sidebarAdvanceUI">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="advance-ui-sweetalerts.html" class="nav-link" data-key="t-sweet-alerts">This Month Payments
-                                    </a>
+                                <a href="advance-ui-sweetalerts.html" class="nav-link" data-key="t-sweet-alerts">This
+                                    Month Payments
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a href="advance-ui-nestable.html" class="nav-link" data-key="t-nestable-list">Payments History</a>
+                                <a href="advance-ui-nestable.html" class="nav-link" data-key="t-nestable-list">Payments
+                                    History</a>
                             </li>
                         </ul>
                     </div>
@@ -252,7 +254,7 @@
                     </div>
                 </li>
 
-                
+
             </ul>
         </div>
         <!-- Sidebar -->

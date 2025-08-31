@@ -26,6 +26,7 @@ import random
 import stripe
 import json
 import re
+from proadmin.views import *
 
 
 # stripe.api_key = settings.STRIPE_TEST_SECRET_KEY  # Your Stripe secret key
@@ -189,6 +190,14 @@ def register(request):
                 email=email,
                 password=make_password(password),
                 verification_token=verification_code
+            )
+
+            # Create notification for new customer registration
+            create_notification(
+                user=user,
+                title="New Customer Registration",
+                message=f"New customer {username} ({email}) has registered on the platform.",
+                notification_type="New Customer"
             )
 
             # send_mail(

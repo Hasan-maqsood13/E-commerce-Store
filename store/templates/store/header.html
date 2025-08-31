@@ -41,7 +41,7 @@
                             <i class="fa fa-user" style="margin-right: 10px;"></i> Admin Dashboard
                         </a>
                         {% else %}
-                        <a href="{% url 'accountshome' %}"
+                        <a href="{% url 'userprofile' %}"
                             style="text-decoration: none; color: yellow; font-weight: bold;">
                             <i class="fa fa-user" style="margin-right: 10px;"></i> {{ request.session.username }}
                         </a>

@@ -46,3 +46,52 @@ def home(request):
         except User.DoesNotExist:
             pass
     return render(request, 'store/shop.html', context)
+
+
+def userprofile(request):
+    # Agar user login nahi hai, to usko login page par bhej dein
+    if not request.session.get('logged_in'):
+        return redirect('login')
+
+    user_id = request.session.get('user_id')
+    user = get_object_or_404(User, id=user_id) # Agar user exist nahi karta to 404 error dega
+
+    if request.method == 'POST':
+        # Form se data get karein
+        firstname = request.POST.get('firstname', '').strip()
+        lastname = request.POST.get('lastname', '').strip()
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone_number = request.POST.get('phone_number', '').strip()
+        address = request.POST.get('address', '').strip()
+        city = request.POST.get('city', '').strip()
+        country = request.POST.get('country', '').strip()
+        postal_code = request.POST.get('postal_code', '').strip()
+
+
+        # Validation checks
+        if not firstname or not lastname or not username or not email:
+            messages.error(request, 'First Name, Last Name, Display Name, and Email are required.')
+        elif User.objects.filter(username=username).exclude(id=user.id).exists():
+            messages.error(request, 'This username is already taken.')
+        elif User.objects.filter(email=email).exclude(id=user.id).exists():
+            messages.error(request, 'This email is already registered.')
+        else:
+            # All validation passed, update user object
+            user.firstname = firstname
+            user.lastname = lastname
+            user.username = username
+            user.email = email
+            user.phone_number = phone_number
+            user.address = address
+            user.city = city
+            user.country = country
+            user.postal_code = postal_code
+
+            user.last_updated = timezone.now()
+            user.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('userprofile')
+
+    context = {'user': user}
+    return render(request, 'store/userprofile.html', context)

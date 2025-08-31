@@ -1,0 +1,271 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Eshop | User Profile{% endblock %}
+{% block content %}
+<div class="main_content">
+
+    <div class="breadcrumb_section bg_gray page-title-mini">
+        <div class="container"><!-- STRART CONTAINER -->
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="page-title">
+                        <h1>{{ request.session.username }}'s Account</h1>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <ol class="breadcrumb justify-content-md-end">
+                        <li class="breadcrumb-item"><a href="#">Store</a></li>
+                        <li class="breadcrumb-item"><a href="#">User Profile</a></li>
+                        <li class="breadcrumb-item active">{{ request.session.username }}'s Account</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- END CONTAINER-->
+    </div>
+
+    <!-- START SECTION SHOP -->
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-4">
+                    <div class="dashboard_menu">
+                        <ul class="nav nav-tabs flex-column" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard"
+                                    role="tab" aria-controls="dashboard" aria-selected="false"><i
+                                        class="ti-layout-grid2"></i>Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab"
+                                    aria-controls="orders" aria-selected="false"><i
+                                        class="ti-shopping-cart-full"></i>Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab"
+                                    aria-controls="address" aria-selected="true"><i class="ti-location-pin"></i>My
+                                    Address</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail"
+                                    role="tab" aria-controls="account-detail" aria-selected="true"><i
+                                        class="ti-id-badge"></i>Account details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}"><i class="ti-lock"></i>Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-8">
+                    <div class="tab-content dashboard_content">
+                        <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
+                            aria-labelledby="dashboard-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Dashboard</h3>
+                                </div>
+                                <div class="card-body">
+                                    <p>Its your Profile Page. You can views the complete detail of your account here. we
+                                        can use user info (like address etc) from here while you want to order
+                                        something. From your account dashboard. you can easily check &amp; view your <a
+                                            href="javascript:;" onclick="$('#orders-tab').trigger('click')">recent
+                                            orders</a>, manage your <a href="javascript:;"
+                                            onclick="$('#address-tab').trigger('click')">shipping and billing
+                                            addresses</a> and <a href="javascript:;"
+                                            onclick="$('#account-detail-tab').trigger('click')">edit your password and
+                                            account details.</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Orders</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Order</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Total</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>#1234</td>
+                                                    <td>March 15, 2020</td>
+                                                    <td>Processing</td>
+                                                    <td>$78.00 for 1 item</td>
+                                                    <td><a href="#" class="btn btn-fill-out btn-sm">View</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>#2366</td>
+                                                    <td>June 20, 2020</td>
+                                                    <td>Completed</td>
+                                                    <td>$81.00 for 1 item</td>
+                                                    <td><a href="#" class="btn btn-fill-out btn-sm">View</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="card mb-3 mb-lg-0">
+                                        <div class="card-header">
+                                            <h3>Billing Address</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <address>
+                                                hello<br>
+                                                hello<br>
+                                                hello<br>
+                                                hello<br>
+                                            </address>
+                                            <p>hello</p>
+                                            <p>hello</p>
+                                            <p>hello</p>
+                                            <p>If you want to edit this info go to thr Account Details section just below the My Address Section.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Shipping Address</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <address>
+                                                hello<br>
+                                                hello<br>
+                                                hello<br>
+                                                hello<br>
+                                            </address>
+                                            <p>hello</p>
+                                            <p>hello</p>
+                                            <p>hello</p>
+                                            <p>If you want to edit this info go to thr Account Details section just below the My Address Section.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="account-detail" role="tabpanel"
+                            aria-labelledby="account-detail-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Account Details</h3>
+                                </div>
+                                <div class="card-body">
+                                    {% if messages %}
+                                    <div class="alert alert-dismissible fade show" role="alert">
+                                        {% for message in messages %}
+                                        <p {% if message.tags %} class="{{ message.tags }} alert-text mb-0" {% endif %}>
+                                            {{ message }}</p>
+                                        {% endfor %}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+
+                                    <form method="post" action="{% url 'userprofile' %}">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="form-group col-md-6 mb-3">
+                                                <label>First Name <span class="required">*</span></label>
+                                                <input required class="form-control" name="firstname" type="text"
+                                                    value="{{ user.firstname|default:'' }}">
+                                            </div>
+                                            <div class="form-group col-md-6 mb-3">
+                                                <label>Last Name <span class="required">*</span></label>
+                                                <input required class="form-control" name="lastname" type="text"
+                                                    value="{{ user.lastname|default:'' }}">
+                                            </div>
+                                            <div class="form-group col-md-12 mb-3">
+                                                <label>Display Name <span class="required">*</span></label>
+                                                <input required class="form-control" name="username" type="text"
+                                                    value="{{ user.username|default:'' }}">
+                                            </div>
+                                            <div class="form-group col-md-12 mb-3">
+                                                <label>Email Address <span class="required">*</span></label>
+                                                <input required class="form-control" name="email" type="email"
+                                                    value="{{ user.email|default:'' }}">
+                                            </div>
+                                            <div class="form-group col-md-12 mb-3">
+                                                <label>Phone Number</label>
+                                                <input class="form-control" name="phone_number" type="tel"
+                                                    value="{{ user.phone_number|default:'' }}">
+                                            </div>
+
+                                            <hr class="mt-4 mb-4">
+                                            <h5 class="mb-3">General Address</h5>
+                                            <div class="form-group col-md-12 mb-3">
+                                                <label>Address</label>
+                                                <input class="form-control" name="address" type="text"
+                                                    value="{{ user.address|default:'' }}">
+                                            </div>
+                                            <div class="form-group col-md-4 mb-3">
+                                                <label>City</label>
+                                                <input class="form-control" name="city" type="text"
+                                                    value="{{ user.city|default:'' }}">
+                                            </div>
+                                            <div class="form-group col-md-4 mb-3">
+                                                <label>Country</label>
+                                                <input class="form-control" name="country" type="text"
+                                                    value="{{ user.country|default:'' }}">
+                                            </div>
+                                            <div class="form-group col-md-4 mb-3">
+                                                <label>Postal Code</label>
+                                                <input class="form-control" name="postal_code" type="text"
+                                                    value="{{ user.postal_code|default:'' }}">
+                                            </div>
+
+                                            <div class="col-md-12 mt-4">
+                                                <button type="submit" class="btn btn-fill-out" name="submit"
+                                                    value="Submit">Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END SECTION SHOP -->
+
+    <!-- START SECTION SUBSCRIBE NEWSLETTER -->
+    <div class="section bg_default small_pt small_pb">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="heading_s1 mb-md-0 heading_light">
+                        <h3>Subscribe Our Newsletter</h3>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="newsletter_form">
+                        <form>
+                            <input type="text" required="" class="form-control rounded-0"
+                                placeholder="Enter Email Address">
+                            <button type="submit" class="btn btn-dark rounded-0" name="submit"
+                                value="Submit">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- START SECTION SUBSCRIBE NEWSLETTER -->
+
+</div>
+{% endblock %}
