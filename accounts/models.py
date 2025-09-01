@@ -24,6 +24,8 @@ class User(models.Model):
     country = models.CharField(max_length=50, blank=True, null=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
 
+    stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
+    
     # Account Management
     Role_choices = (
         ('admin', 'Admin'),

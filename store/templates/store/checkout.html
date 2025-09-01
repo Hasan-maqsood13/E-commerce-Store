@@ -1,0 +1,174 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Eshop | Checkout{% endblock %}
+{% block content %}
+<div class="breadcrumb_section bg_gray page-title-mini">
+    <div class="container"><!-- STRART CONTAINER -->
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="page-title">
+                    <h1>Checkout</h1>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <ol class="breadcrumb justify-content-md-end">
+                    <li class="breadcrumb-item"><a href="#">Store</a></li>
+                    <li class="breadcrumb-item"><a href="#">Checkout</a></li>
+                    <li class="breadcrumb-item active">Checkout</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- END CONTAINER-->
+</div>
+<!-- END SECTION BREADCRUMB -->
+
+<!-- START MAIN CONTENT -->
+<div class="main_content">
+
+    <!-- START SECTION SHOP -->
+    <div class="section">
+        <div class="container">
+            <form method="post" action="{% url 'place_order' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="heading_s1">
+                            <h4>Shipping Details</h4>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <input type="text" required class="form-control" name="fname" 
+                                   placeholder="First name *" value="{{ user.firstname|default:'' }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="text" required class="form-control" name="lname" 
+                                   placeholder="Last name *" value="{{ user.lastname|default:'' }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input class="form-control" type="text" name="cname" placeholder="Company Name">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="text" class="form-control" name="billing_address" required=""
+                                placeholder="Address *" value="{{ user.address|default:'' }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="text" class="form-control" name="billing_address2" 
+                                placeholder="Address line2">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input class="form-control" required type="text" name="city" 
+                                placeholder="City / Town *" value="{{ user.city|default:'' }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input class="form-control" required type="text" name="state"
+                                placeholder="State / County *">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input class="form-control" required type="text" name="zipcode"
+                                placeholder="Postcode / ZIP *" value="{{ user.postal_code|default:'' }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input class="form-control" required type="text" name="phone" 
+                                placeholder="Phone *" value="{{ user.phone_number|default:'' }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <input class="form-control" required type="text" name="email" 
+                                placeholder="Email address *" value="{{ user.email|default:'' }}">
+                        </div>
+                        
+                        <div class="heading_s1">
+                            <h4>Additional information</h4>
+                        </div>
+                        <div class="form-group mb-0">
+                            <textarea rows="5" class="form-control" placeholder="Order notes" name="order_notes"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="order_review">
+                            <div class="heading_s1">
+                                <h4>Your Orders</h4>
+                            </div>
+                            <div class="table-responsive order_table">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in cart_items %}
+                                        <tr>
+                                            <td>{{ item.product.name }} <span class="product-qty">x {{ item.quantity }}</span></td>
+                                            <td>${{ item.total_price }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>SubTotal</th>
+                                            <td class="product-subtotal">${{ subtotal }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Shipping</th>
+                                            <td>Free Shipping</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total</th>
+                                            <td class="product-subtotal">${{ grand_total }}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="payment_method">
+                                <div class="heading_s1">
+                                    <h4>Payment</h4>
+                                </div>
+                                <div class="payment_option">
+                                    <div class="custome-radio">
+                                        <input class="form-check-input" type="radio" name="payment_method"
+                                            id="stripe_payment" value="Stripe" required>
+                                        <label class="form-check-label" for="stripe_payment">Stripe</label>
+                                    </div>
+                                    <div class="custome-radio">
+                                        <input class="form-check-input" type="radio" name="payment_method"
+                                            id="cod_payment" value="COD" checked>
+                                        <label class="form-check-label" for="cod_payment">COD</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-fill-out btn-block">Place Order</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END SECTION SHOP -->
+
+    <!-- START SECTION SUBSCRIBE NEWSLETTER -->
+    <div class="section bg_default small_pt small_pb">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="heading_s1 mb-md-0 heading_light">
+                        <h3>Subscribe Our Newsletter</h3>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="newsletter_form">
+                        <form>
+                            <input type="text" required="" class="form-control rounded-0"
+                                placeholder="Enter Email Address">
+                            <button type="submit" class="btn btn-dark rounded-0" name="submit"
+                                value="Submit">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- START SECTION SUBSCRIBE NEWSLETTER -->
+
+</div>
+{% endblock %}

@@ -288,5 +288,3 @@ def view_wishlist(request):
         'wishlist_items': wishlist_items,
     }
     return render(request, 'products/wishlist.html', context)
-
-

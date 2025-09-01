@@ -28,6 +28,7 @@ import stripe
 import json
 import re
 
+stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 # stripe.api_key = settings.STRIPE_TEST_SECRET_KEY  # Your Stripe secret key
 
@@ -219,4 +220,157 @@ def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(Cart, id=item_id, user=user)
     cart_item.delete()
     messages.success(request, "Item removed from cart")
+    return redirect('cart')
+
+
+def checkoutpage(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.error(request, "Please login to checkout")
+        return redirect('login')  # Assuming you have a login URL
+    
+    user = get_object_or_404(User, id=user_id)
+    cart_items = Cart.objects.filter(user=user)
+    
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty")
+        return redirect('cart')
+    
+    # Calculate totals
+    subtotal = sum(item.total_price() for item in cart_items)
+    
+    context = {
+        'cart_items': cart_items,
+        'subtotal': subtotal,
+        'grand_total': subtotal,  # Assuming no shipping/taxes for now
+        'user': user
+    }
+    
+    return render(request, 'store/checkout.html', context)
+
+# views.py (store app)
+def place_order(request):
+    if request.method == 'POST':
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'status': 'error', 'message': 'User not logged in'})
+        
+        user = get_object_or_404(User, id=user_id)
+        cart_items = Cart.objects.filter(user=user)
+        
+        if not cart_items.exists():
+            return JsonResponse({'status': 'error', 'message': 'Cart is empty'})
+        
+        # Get form data
+        full_name = f"{request.POST.get('fname')} {request.POST.get('lname')}"
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('billing_address')
+        city = request.POST.get('city')
+        postal_code = request.POST.get('zipcode')
+        payment_method = request.POST.get('payment_method')
+        
+        # Calculate total amount
+        total_amount = sum(item.total_price() for item in cart_items)
+        
+        # Create order
+        order = Order.objects.create(
+            user=user,
+            full_name=full_name,
+            email=email,
+            phone=phone,
+            address=address,
+            city=city,
+            postal_code=postal_code,
+            payment_method=payment_method,
+            total_amount=total_amount
+        )
+        
+        # Create order items
+        for cart_item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=cart_item.product,
+                quantity=cart_item.quantity,
+                price=cart_item.product.price
+            )
+        
+        # Handle payment based on method
+        if payment_method == 'COD':
+            # Clear cart
+            cart_items.delete()
+            messages.success(request, "Order placed successfully!")
+            return redirect('home')
+        elif payment_method == 'Stripe':
+            # Here you would implement Stripe payment
+            # For now, we'll just redirect to a placeholder
+            return redirect('stripe_checkout', order_id=order.id)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+
+def stripe_checkout(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user_id=request.session.get('user_id'))
+    
+    # Set your Stripe API key
+    stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
+    
+    try:
+        # Check if customer exists, create if not
+        if not order.user.stripe_customer_id:
+            customer = stripe.Customer.create(
+                email=order.email,
+                name=order.full_name,
+                metadata={'user_id': order.user.id}
+            )
+            order.user.stripe_customer_id = customer.id
+            order.user.save()
+        else:
+            customer = stripe.Customer.retrieve(order.user.stripe_customer_id)
+        
+        # Create checkout session
+        checkout_session = stripe.checkout.Session.create(
+            customer=customer.id,
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': f'Order #{order.id}',
+                        },
+                        'unit_amount': int(order.total_amount * 100),  # Convert to cents
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=request.build_absolute_uri(f'/order-success/{order.id}/'),
+            cancel_url=request.build_absolute_uri(f'/order-cancel/{order.id}/'),
+            metadata={'order_id': order.id}
+        )
+        
+        return redirect(checkout_session.url)
+    
+    except Exception as e:
+        messages.error(request, f"Error processing payment: {str(e)}")
+        return redirect('checkoutpage')
+
+def order_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user_id=request.session.get('user_id'))
+    order.payment_status = True
+    order.status = 'Processing'
+    order.save()
+    
+    # Clear cart
+    Cart.objects.filter(user_id=request.session.get('user_id')).delete()
+    
+    messages.success(request, "Payment successful! Your order has been placed.")
+    return redirect('home')
+
+def order_cancel(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user_id=request.session.get('user_id'))
+    order.status = 'Cancelled'
+    order.save()
+    
+    messages.warning(request, "Payment was cancelled.")
     return redirect('cart')
