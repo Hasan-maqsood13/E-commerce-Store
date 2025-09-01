@@ -135,12 +135,7 @@
                     <div class="collapse menu-dropdown" id="sidebarAuth">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="apps-chat.html" class="nav-link" data-key="t-chat">
-                                    Add New Product
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="apps-chat.html" class="nav-link" data-key="t-chat">
+                                <a href="{% url 'products' %}" class="nav-link" data-key="t-chat">
                                     All Products
                                 </a>
                             </li>
@@ -155,14 +150,9 @@
                         <span data-key="t-pages">Categories</span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarPages">
-                        <ul class="nav nav-sm flex-column">
+                        <ul class="nav nav-sm flex-column"> 
                             <li class="nav-item">
-                                <a href="pages-starter.html" class="nav-link" data-key="t-starter">
-                                    Add new Category
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="pages-starter.html" class="nav-link" data-key="t-starter">
+                                <a href="{% url 'categories' %}" class="nav-link" data-key="t-starter">
                                     All Category
                                 </a>
                             </li>

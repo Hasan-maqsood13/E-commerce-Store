@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'store',
     'proadmin',
     'accounts',
+    'Products',
 ]
 
 MIDDLEWARE = [
