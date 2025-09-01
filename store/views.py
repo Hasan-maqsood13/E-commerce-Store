@@ -140,3 +140,83 @@ def userprofile(request):
     context = {'user': user}
     return render(request, 'store/userprofile.html', context)
 
+
+def cart(request):
+    user_id = request.session.get('user_id')
+    cart_items = Cart.objects.filter(user_id=user_id)
+
+    subtotal = 0
+    for item in cart_items:
+        item.item_total = item.product.price * item.quantity
+        subtotal += item.item_total
+
+    context = {
+        'cart_items': cart_items,
+        'subtotal': subtotal,
+        'grand_total': subtotal,
+    }
+    return render(request, 'store/cart.html', context)
+
+def add_to_cart(request, product_id):
+    user_id = request.session['user_id']
+    user = get_object_or_404(User, id=user_id)
+    product = get_object_or_404(Product, id=product_id)
+    
+    cart_item, created = Cart.objects.get_or_create(
+        user=user,
+        product=product,
+        defaults={'quantity': 1}
+    )
+    
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+        messages.success(request, f"Updated {product.name} quantity to {cart_item.quantity}")
+    else:
+        messages.success(request, f"Added {product.name} to your cart")
+    
+    return redirect('cart')
+
+def update_cart(request, item_id):
+    user_id = request.session['user_id']
+    user = get_object_or_404(User, id=user_id)
+    cart_item = get_object_or_404(Cart, id=item_id, user=user)
+    
+    if request.method == 'POST':
+        try:
+            quantity = int(request.POST.get('quantity', 1))
+        except (ValueError, TypeError):
+            return JsonResponse({'status': 'error', 'message': 'Invalid quantity'}, status=400)
+            
+        if quantity > 0:
+            cart_item.quantity = quantity
+            cart_item.save()
+            
+            new_total = sum(item.total_price() for item in Cart.objects.filter(user=user))
+            
+            return JsonResponse({
+                'status': 'success',
+                'item_total': cart_item.total_price(),
+                'new_total': new_total,
+                'new_quantity': cart_item.quantity,
+                'message': "Cart updated successfully"
+            })
+        else:
+            cart_item.delete()
+            new_total = sum(item.total_price() for item in Cart.objects.filter(user=user))
+            return JsonResponse({
+                'status': 'success',
+                'new_total': new_total,
+                'message': "Item removed from cart"
+            })
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+def remove_from_cart(request, item_id):
+    # ... (existing code for remove_from_cart)
+    user_id = request.session['user_id']
+    user = get_object_or_404(User, id=user_id)
+    cart_item = get_object_or_404(Cart, id=item_id, user=user)
+    cart_item.delete()
+    messages.success(request, "Item removed from cart")
+    return redirect('cart')

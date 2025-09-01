@@ -1,0 +1,289 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Eshop | Shopping Cart{% endblock %}
+{% block content %}
+<div class="breadcrumb_section bg_gray page-title-mini">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="page-title">
+                    <h1>Shopping Cart</h1>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <ol class="breadcrumb justify-content-md-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item active">Shopping Cart</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-12">
+                {% if cart_items %}
+                <div class="table-responsive shop_cart_table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="product-thumbnail">&nbsp;</th>
+                                <th class="product-name">Product</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-subtotal">Total</th>
+                                <th class="product-remove">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td class="product-thumbnail">
+                                    <a href="#">
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                    </a>
+                                </td>
+                                <td class="product-name" data-title="Product">
+                                    <a href="#">{{ item.product.name }}</a>
+                                </td>
+                                <td class="product-price" data-title="Price">${{ item.product.price }}</td>
+                                <td class="product-quantity" data-title="Quantity">
+                                    <div class="quantity">
+                                        <!-- <input type="button" value="-" class="minus"
+                                            onclick="decrementQuantity({{ item.id }})"> -->
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" title="Qty"
+                                            class="qty" size="4" id="quantity-{{ item.id }}" min="0">
+                                        <!-- <input type="button" value="+" class="plus"
+                                            onclick="incrementQuantity({{ item.id }})"> -->
+                                    </div>
+                                </td>
+                                <td class="product-subtotal" data-title="Total" id="item-total-{{ item.id }}">${{ item.item_total }}</td>
+                                <td class="product-remove" data-title="Remove">
+                                    <a href="{% url 'remove_from_cart' item.id %}"><i class="ti-close"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="ti-shopping-cart" style="font-size: 48px; color: #ccc;"></i>
+                    <h4 class="mt-3">Your cart is empty</h4>
+                    <p>Start shopping to add items to your cart</p>
+                    <a href="{% url 'home' %}" class="btn btn-fill-out">Continue Shopping</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if cart_items %}
+        <div class="row">
+            <div class="col-12">
+                <div class="medium_divider"></div>
+                <div class="divider center_icon"><i class="ti-shopping-cart-full"></i></div>
+                <div class="medium_divider"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="border p-3 p-md-4">
+                    <div class="heading_s1 mb-3">
+                        <h6>Cart Totals</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                
+                                <tr>
+                                    <td class="cart_total_label">Cart Subtotal</td>
+                                    <td class="cart_total_amount" id="cart-subtotal">${{ subtotal }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="cart_total_label">Shipping</td>
+                                    <td class="cart_total_amount" id="shipping-cost">Free Shipping</td>
+                                </tr>
+                                <tr>
+                                    <td class="cart_total_label">Total</td>
+                                    <td class="cart_total_amount"><strong id="grand-total">${{ grand_total }}</strong></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="#" class="btn btn-fill-out">Proceed To CheckOut</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<script>
+    // Helper: parse amount text like "$120.00" -> 120
+    function parseAmount(text) {
+        return parseFloat(text.replace('$', '').trim()) || 0;
+    }
+
+    // Helper: format amount with $ sign
+    function formatAmount(amount) {
+        return '$' + amount.toFixed(2);
+    }
+
+    // Optimistic update of cart totals
+    function updateCartTotals(itemId, newItemTotal, diff) {
+        // Update row total
+        const itemTotalElement = document.getElementById('item-total-' + itemId);
+        if (itemTotalElement) {
+            itemTotalElement.textContent = formatAmount(newItemTotal);
+        }
+
+        // Update subtotal and grand total instantly
+        const cartSubtotalElement = document.getElementById('cart-subtotal');
+        const grandTotalElement = document.getElementById('grand-total');
+
+        if (cartSubtotalElement && grandTotalElement) {
+            let currentSubtotal = parseAmount(cartSubtotalElement.textContent);
+            let currentGrand = parseAmount(grandTotalElement.textContent);
+
+            // Add diff to both
+            currentSubtotal += diff;
+            currentGrand += diff;
+
+            cartSubtotalElement.textContent = formatAmount(currentSubtotal);
+            grandTotalElement.textContent = formatAmount(currentGrand);
+        }
+    }
+
+    // Backend sync
+    function updateItem(itemId) {
+        const quantityInput = document.getElementById('quantity-' + itemId);
+        const quantity = quantityInput.value;
+        const csrfToken = '{{ csrf_token }}';
+        const url = `{% url 'update_cart' 0 %}`.replace('0', itemId);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken
+            },
+            body: `quantity=${quantity}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status !== 'success') {
+                alert('Error updating cart: ' + data.message);
+                window.location.reload(); // fallback reload if error
+            }
+        })
+        .catch(() => {
+            alert('Server error, refreshing cart...');
+            window.location.reload();
+        });
+    }
+
+    // Quantity adjustment functions
+    function incrementQuantity(itemId) {
+        const input = document.getElementById('quantity-' + itemId);
+        const oldQuantity = parseInt(input.value);
+        const newQuantity = oldQuantity + 1;
+
+        input.value = newQuantity;
+
+        // Optimistic price update
+        const pricePerItem = parseAmount(
+            input.closest('tr').querySelector('.product-price').textContent
+        );
+        const diff = pricePerItem; // +1 item added
+        const newItemTotal = pricePerItem * newQuantity;
+
+        updateCartTotals(itemId, newItemTotal, diff);
+
+        // Backend update
+        updateItem(itemId);
+    }
+
+    function decrementQuantity(itemId) {
+        const input = document.getElementById('quantity-' + itemId);
+        const oldQuantity = parseInt(input.value);
+
+        if (oldQuantity > 1) {
+            const newQuantity = oldQuantity - 1;
+            input.value = newQuantity;
+
+            // Optimistic price update
+            const pricePerItem = parseAmount(
+                input.closest('tr').querySelector('.product-price').textContent
+            );
+            const diff = -pricePerItem; // -1 item removed
+            const newItemTotal = pricePerItem * newQuantity;
+
+            updateCartTotals(itemId, newItemTotal, diff);
+
+            // Backend update
+            updateItem(itemId);
+        } else {
+            if (confirm("Are you sure you want to remove this item from your cart?")) {
+                input.value = 0;
+                const row = input.closest('tr');
+                const itemTotalElement = document.getElementById('item-total-' + itemId);
+                const itemTotal = parseAmount(itemTotalElement.textContent);
+
+                // Optimistic remove
+                updateCartTotals(itemId, 0, -itemTotal);
+                row.remove();
+
+                // Backend update
+                updateItem(itemId);
+            }
+        }
+    }
+
+    // Manual input (when user directly edits number field)
+    document.querySelectorAll('.qty').forEach(input => {
+        input.addEventListener('change', (event) => {
+            const itemId = event.target.id.split('-')[1];
+            const row = event.target.closest('tr');
+            const pricePerItem = parseAmount(
+                row.querySelector('.product-price').textContent
+            );
+
+            const oldItemTotal = parseAmount(
+                row.querySelector('.product-subtotal').textContent
+            );
+
+            let newQuantity = parseInt(event.target.value);
+            if (isNaN(newQuantity) || newQuantity < 1) {
+                newQuantity = 1;
+                event.target.value = 1;
+            }
+
+            const newItemTotal = pricePerItem * newQuantity;
+            const diff = newItemTotal - oldItemTotal;
+
+            // Optimistic update
+            updateCartTotals(itemId, newItemTotal, diff);
+
+            // Backend update
+            updateItem(itemId);
+        });
+    });
+</script>
+
+
+
+{% endblock %}
