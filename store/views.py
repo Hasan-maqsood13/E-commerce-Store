@@ -22,6 +22,7 @@ from datetime import timedelta
 from datetime import datetime
 from .models import *
 from accounts.models import User
+from Products.models import *
 import random
 import stripe
 import json
@@ -35,16 +36,59 @@ def generate_verification_code(length=8):
     return str(random.randint(1000, 9999))
 
 
-#Create your Views here
+# Update your home view
 def home(request):
     context = {}
-    if request.session.get('logged_in'):
+    
+    # Handle session
+    if not request.session.session_key:
+        request.session.create()
+    
+    # Check if user is logged in via session (your custom login system)
+    if 'logged_in' in request.session and request.session['logged_in']:
         try:
             user_id = request.session.get('user_id')
-            user = User.objects.get(id=user_id)
-            context['user'] = user
-        except User.DoesNotExist:
-            pass
+            # If you have a custom User model, use it here
+            # user = YourUserModel.objects.get(id=user_id)
+            # context['user'] = user
+            context['user'] = {'username': request.session.get('username', 'User')}
+        except:
+            request.session['logged_in'] = False
+            request.session['user_id'] = None
+    
+    # Get wishlist product IDs for current session
+    session_key = request.session.session_key
+    wishlist_product_ids = Wishlist.objects.filter(
+        session_key=session_key
+    ).values_list('product_id', flat=True)
+    
+    context['wishlist_product_ids'] = list(wishlist_product_ids)
+    
+    # Fetching only the unique, top-level categories
+    top_level_categories = Category.objects.filter(parent__isnull=True, is_active=True).distinct()
+    context['categories'] = top_level_categories
+    
+    # Get all products for different sections
+    new_arrival_products = Product.objects.filter(tag='new_arrival', is_active=True).distinct()
+    context['new_arrival_products'] = new_arrival_products
+    context['new_arrival_count'] = new_arrival_products.count()
+    
+    best_seller_products = Product.objects.filter(tag='best_seller', is_active=True).distinct()
+    context['best_seller_products'] = best_seller_products
+    context['best_seller_count'] = best_seller_products.count()
+    
+    featured_products = Product.objects.filter(tag='featured', is_active=True).distinct()
+    context['featured_products'] = featured_products
+    context['featured_count'] = featured_products.count()
+    
+    special_offer_products = Product.objects.filter(tag='special_offer', is_active=True).distinct()
+    context['special_offer_products'] = special_offer_products
+    context['special_offer_count'] = special_offer_products.count()
+    
+    top_rated_products = Product.objects.filter(tag='top_rated', is_active=True).distinct()
+    context['top_rated_products'] = top_rated_products
+    context['top_rated_count'] = top_rated_products.count()
+    
     return render(request, 'store/shop.html', context)
 
 
@@ -95,3 +139,4 @@ def userprofile(request):
 
     context = {'user': user}
     return render(request, 'store/userprofile.html', context)
+

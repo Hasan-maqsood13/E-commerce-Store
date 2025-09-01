@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.db.models import CharField, DateField, DecimalField, ImageField
 import uuid
+from accounts.models import *
 
 
 # Create your models here.
@@ -81,3 +82,15 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+class Wishlist(models.Model):
+    session_key = models.CharField(max_length=40, default='', unique=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='wishlisted_by')
+    added_on = models.DateTimeField(default=timezone.now)
+    
+
+    class Meta:
+        unique_together = ('session_key', 'product')  # Prevent duplicates
+
+    def __str__(self):
+        return f"Session {self.session_key} - {self.product.name}"

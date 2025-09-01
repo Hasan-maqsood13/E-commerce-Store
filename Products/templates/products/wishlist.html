@@ -1,0 +1,107 @@
+{% extends 'store/shop.html' %}
+{% load static %}
+
+{% block title %} My Wishlist - Eshop {% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="heading_s1 mb-4">
+                    <h1>My Wishlist</h1>
+                </div>
+                
+                {% if messages %}
+                <div class="mb-3">
+                    {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if wishlist_items %}
+                <div class="row">
+                    {% for item in wishlist_items %}
+                    <div class="col-md-4 col-lg-3 mb-4">
+                        <div class="product_wrap">
+                            {% if item.product.tag == 'new_arrival' %}
+                            <span class="pr_flash">New</span>
+                            {% elif item.product.tag == 'best_seller' %}
+                            <span class="pr_flash bg-danger">Bestseller</span>
+                            {% elif item.product.tag == 'featured' %}
+                            <span class="pr_flash bg-success">Featured</span>
+                            {% elif item.product.tag == 'special_offer' %}
+                            <span class="pr_flash bg-warning">Special Offer</span>
+                            {% elif item.product.tag == 'top_rated' %}
+                            <span class="pr_flash bg-info">Top Rated</span>
+                            {% endif %}
+                            
+                            <div class="product_img">
+                                <a href="{% url 'product_detail' item.product.slug %}">
+                                    {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid" />
+                                    {% else %}
+                                    <img src="{% static 'store/assets/images/el_img1.jpg' %}" alt="{{ item.product.name }}" class="img-fluid" />
+                                    {% endif %}
+                                </a>
+                                <div class="product_action_box">
+                                    <ul class="list_none pr_action_btn">
+                                        <li class="add-to-cart">
+                                            <a href="#"><i class="icon-basket-loaded"></i> Add To Cart</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'quick_view' item.product.id %}" class="popup-ajax"><i class="icon-magnifier-add"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'remove_from_wishlist' item.product.id %}" title="Remove from Wishlist">
+                                                <i class="icon-heart text-danger"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="product_info">
+                                <h6 class="product_title">
+                                    <a href="{% url 'product_detail' item.product.slug %}">{{ item.product.name }}</a>
+                                </h6>
+                                <div class="product_price">
+                                    <span class="price">₹{{ item.product.price }}</span>
+                                    {% if item.product.tag == 'on_sale' or item.product.tag == 'special_offer' %}
+                                    <del>₹{{ item.product.price|add:100 }}</del>
+                                    <div class="on_sale">
+                                        <span>
+                                            {% if item.product.tag == 'on_sale' %}Sale{% else %}Special Offer{% endif %}
+                                        </span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="rating_wrap">
+                                    <div class="rating">
+                                        <div class="product_rate" style="width:80%"></div>
+                                    </div>
+                                    <span class="rating_num">(25)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="icon-heart" style="font-size: 64px; color: #dee2e6;"></i>
+                    <h3 class="mt-4">Your wishlist is empty</h3>
+                    <p class="text-muted mb-4">You haven't added any products to your wishlist yet.</p>
+                    <a href="{% url 'home' %}" class="btn btn-primary">
+                        <i class="icon-basket-loaded me-2"></i>Continue Shopping
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

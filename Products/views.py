@@ -227,3 +227,66 @@ def delete_product(request, product_id):
         prod.delete()
         messages.success(request, "Product deleted successfully.")
     return redirect('products')
+
+
+def product_detail(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+    related_products = Product.objects.filter(
+        category=product.category, 
+        is_active=True
+    ).exclude(id=product.id).distinct()[:4]
+    
+    context = {
+        'product': product,
+        'related_products': related_products,
+    }
+    return render(request, 'store/product_detail.html', context)
+
+def quick_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    return render(request, 'store/quick_view.html', {'product': product})
+
+
+def add_to_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Get or create session key
+    if not request.session.session_key:
+        request.session.create()
+    session_key = request.session.session_key
+    
+    # Check if product is already in wishlist
+    if Wishlist.objects.filter(session_key=session_key, product=product).exists():
+        messages.info(request, 'Product is already in your wishlist')
+    else:
+        # Add to wishlist
+        Wishlist.objects.create(session_key=session_key, product=product)
+        messages.success(request, 'Product added to wishlist successfully')
+    
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+def remove_from_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Get session key
+    session_key = request.session.session_key
+    
+    # Remove from wishlist
+    Wishlist.objects.filter(session_key=session_key, product=product).delete()
+    messages.success(request, 'Product removed from wishlist')
+    
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+def view_wishlist(request):
+    # Get session key
+    session_key = request.session.session_key
+    
+    # Get wishlist items
+    wishlist_items = Wishlist.objects.filter(session_key=session_key).select_related('product')
+    
+    context = {
+        'wishlist_items': wishlist_items,
+    }
+    return render(request, 'products/wishlist.html', context)
+
+
